@@ -40,7 +40,7 @@ router.post('/', function(req, res, next) {
         if(usercount >0)
         {
           res.status(403)      // HTTP status 404: NotFound
-            .send('Username Error');
+              .redirect('/users');
           return ;          
         }else
         {
@@ -50,8 +50,8 @@ router.post('/', function(req, res, next) {
  
             }else
             {
-              res.status(200)      // HTTP status 404: NotFound
-                .send('add user success');
+              res.status(200).redirect('/users');     // HTTP status 404: NotFound
+				      
             }
             return;
           });

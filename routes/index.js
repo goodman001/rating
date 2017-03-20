@@ -4,7 +4,11 @@ var User = require("../models/user")
 var Store = require("../models/store")
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index');
+});
+/* GET home page. */
+router.get('/regpage', function(req, res, next) {
+  res.status(200).render('register');
 });
 /* Get userlist*/
 /* GET users listing.
@@ -21,8 +25,8 @@ router.get('/users', function(req, res, next) {
   if(age!=undefined){condition['age'] = age;}  
   if(sex!=undefined){condition['sex'] = sex;} 
   User.find(condition,function(err,re){
-    res.json(re)
-        .status(200);
+    //res.json(re).status(200)
+    res.status(200).render('userlist', {'lists':re});
   });
 });
 /* Get userlist*/
