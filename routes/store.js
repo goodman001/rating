@@ -133,6 +133,7 @@ router.put('/', function(req, res, next){
       if(re == null){
           res.status(404)      // HTTP status 404: NotFound
           .send('ID find Error');
+		  return;
       }else{
 		 //console.log(condition);
          Store.update({'_id':ids},{$set: condition}, function(err,re) {
@@ -142,8 +143,7 @@ router.put('/', function(req, res, next){
               return;
             }else{
 				Store.findOne({'_id':ids},function(err,re){
-				  res.json(re)
-					.status(200);
+				  res.json(re);
 				  return;
 				});
 			}
