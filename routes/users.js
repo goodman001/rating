@@ -1,31 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var User = require("../models/user")
-/* GET users listing.
-curl http://127.0.0.1:3000/users?firstname=Tom&sex=M
-*/
-router.get('/', function(req, res, next) {
-  console.log(lalal);
-});
-router.get('/users', function(req, res, next) {
-  var condition = {};
-  var firstname = req.query.firstname;
-  var lastname = req.query.lastname;
-  var age = req.query.age;
-  var sex = req.query.sex;
-  if(firstname!=undefined){condition['firstname'] = firstname;}
-  if(lastname!=undefined){condition['lastname'] = lastname;}
-  if(age!=undefined){condition['age'] = age;}  
-  if(sex!=undefined){condition['sex'] = sex;} 
-  User.find(condition,function(err,re){
-    res.json(re);
-  });
-});
+
 /*
 *curl --data "username=gump1994&firstname=Tom&lastname=Hanks&sex=M&age=60" http://127.0.0.1:3000/user
 *curl --data "username=h0rcux&firstname=Tom&lastname=Riddle&sex=M&age=71" http://127.0.0.1:3000/user
 */
-router.post('/user', function(req, res, next) {
+router.post('/', function(req, res, next) {
   var username = req.body.username;
   var firstname = req.body.firstname;
   var lastname = req.body.lastname;
@@ -85,9 +66,9 @@ router.post('/user', function(req, res, next) {
 /*
 * curl http://127.0.0.1:3000/user?id=
 * curl http://127.0.0.1:3000/user?id=
-* curl http://127.0.0.1:3000/user
+* curl http://127.0.0.1:3000
 */
-router.get('/user/', function(req, res, next) {
+router.get('/', function(req, res, next) {
   var id = req.query.id;
   var username = req.query.username;
   if(id == undefined && username == undefined){
@@ -135,9 +116,87 @@ router.get('/user/', function(req, res, next) {
 
       }
     });
-  }
-  
-  
+  } 
+});
+/*
+*curl -X DELETE 'http://127.0.0.1:3000/user?id=1489826734863'
+*
+*/
+router.delete('/', function(req, res, next){
+  var ids = req.query.id;
+  User.findOne({'_id':ids},function(err,re){
+    if(err){
+      res.status(404)      // HTTP status 404: NotFound
+          .send('ID find Error');
+      return;
+    }else
+    {
+      if(re == null){
+          res.status(404)      // HTTP status 404: NotFound
+          .send('ID find Error');
+      }else{
+        User.remove({
+        _id: ids
+        }, function(err, re) {
+            if (err)
+            {
+              res.status(404)      // HTTP status 404: NotFound
+                  .send('Delete Error');
+            }
+            else
+            {
+              res.json({ message: 'Successfully deleted' });
+            }      
+        });
+      }
+
+    }
+  });
   
 });
+
+/*
+*curl -X PUT -d 'username=gump1994&firstname=Tomm&lastname=Hankstest&sex=M&age=30' 'http://127.0.0.1:3000/user?id=1489829782845'
+*/
+router.put('/', function(req, res, next){
+  var ids = req.query.id;
+  var condition = {};
+  var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
+  var age = req.body.age;
+  var sex = req.body.sex;
+  if(firstname!=undefined){condition['firstname'] = firstname;}
+  if(lastname!=undefined){condition['lastname'] = lastname;}
+  if(age!=undefined){condition['age'] = age;}  
+  if(sex!=undefined){condition['sex'] = sex;} 
+  User.findOne({'_id':ids},function(err,re){
+    if(err){
+      res.status(404)      // HTTP status 404: NotFound
+          .send('ID find Error');
+      return;
+    }else
+    {
+      if(re == null){
+          res.status(404)      // HTTP status 404: NotFound
+          .send('ID find Error');
+      }else{
+         User.update({'_id':ids},{$set: condition}, function(err,re) {
+            if(err){
+              res.status(404)      // HTTP status 404: NotFound
+                  .send('ID find Error');
+              return;
+            }
+            User.findOne({'_id':ids},function(err,re){
+              res.json(re);
+              return;
+            });
+            
+         });
+      }
+
+    }
+  });
+  
+});
+
 module.exports = router;
