@@ -64,7 +64,8 @@
 					<th>lastname</th>
 					<th>sex</th>
 					<th>age</th>
-					<th><center>Option</center></th>
+					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody id="userlistbody">
@@ -76,17 +77,15 @@
 <script>
 	function showuserlist(data){
 		for(var i=0;i< data.length;i++){
-			var td_id = $('<input name="firstname" type="text" value="'+data[i]._id +'" />');
-			var trc = $('<td><input name="firstname'+ i +'" type="text" value="'+data[i].firstname +'" /></td>' + '<td><input name="lastname'+ i +'" type="text" value="'+data[i].lastname +'" /></td>'+ '<td><input name="sex'+ i +'" type="text" value="'+data[i].sex +'" /></td>'+ '<td><input name="age'+ i +'" type="text" value="'+data[i].age +'" /></td>' + '<td><a class="'+ i +'"></a></td>');
+			var td_id = $('<input id="firstname" type="text" value="'+data[i]._id +'" />');
+			var trc = $('<td id="id'+ i +'">'+data[i]._id+'</td><td>'+data[i].username+'</td><td><input id="firstname'+ i +'" type="text" value="'+data[i].firstname +'" /></td>' + '<td><input id="lastname'+ i +'" type="text" value="'+data[i].lastname +'" /></td>'+ '<td><input id="sex'+ i +'" type="text" value="'+data[i].sex +'" /></td>'+ '<td><input id="age'+ i +'" type="text" value="'+data[i].age +'" /></td>' + '<td><a class="btn btn-success" id="upload'+ i +'">Upload</a></td><td><a class="btn btn-success" id="del'+ i +'">Delete</a></td>');
 			//var tr = $("<td></td>")
 			//var li = $("<td>abc</td>");
 			$("#userlistbody").append($("<tr></tr>").append(trc));
 			//$("#userlistbody > tr").append(td_id);
 		}
-		
-		
-		
 	}
+	
 	$.ajax({  
         type:"get",  
         url:"/users",  
@@ -95,4 +94,19 @@
               showuserlist(data);
         }  
     }); 
+	/*userlist edit /delete*/
+	$("#userlistbody").on("click","a", function() {
+		//alert($(this).attr("id"));
+		var str = $(this).attr("id");
+		if(str.indexOf('upload')>-1){
+			str = str.replace('upload','');
+			var id = $('#id'+str).val();
+			var firstname = $('#firstname'+str).val();
+			var lastname = $('#lastname'+str).val();
+			var sex = $('#sex'+str).val();
+			var age = $('#age'+str).val();
+			alert(id);
+		}
+     //do something here
+ });
 </script>
