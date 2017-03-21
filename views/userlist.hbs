@@ -67,22 +67,32 @@
 					<th><center>Option</center></th>
 				</tr>
 			</thead>
-			<tbody>
-			{{#each lists}}
-				<tr>
-					<form role="form" action="/user?id={{this._id}}" method="post">
-					<input type="hidden" name="_method" value="put">
-					<td> {{this._id}}</td>
-					<td>{{this.username}}</td>
-					<td><input name="firstname" type="text" value="{{this.firstname}}"  maxlength="20" minlength="1" required /></td>
-					<td><input name="lastname" type="text" value="{{this.lastname}}"  maxlength="20" minlength="1" required /></td>
-					<td><input name="sex" type="text" value="{{this.sex}}"  maxlength="2" minlength="1" required /></td>
-					<td><input name="age" type="text" value="{{this.age}}" pattern="^[0-9]{1,2}$" required/> </td>
-					<td><button type="submit" class="btn btn-default">Message</button></td>
-					</form>
-				</tr>
-			{{/each}}
+			<tbody id="userlistbody">
+				
 			</tbody>
 		</table>  
 	</div>	
 </div>
+<script>
+	function showuserlist(data){
+		for(var i=0;i< data.length;i++){
+			var td_id = $('<input name="firstname" type="text" value="'+data[i]._id +'" />');
+			var trc = $('<td><input name="firstname'+ i +'" type="text" value="'+data[i].firstname +'" /></td>' + '<td><input name="lastname'+ i +'" type="text" value="'+data[i].lastname +'" /></td>'+ '<td><input name="sex'+ i +'" type="text" value="'+data[i].sex +'" /></td>'+ '<td><input name="age'+ i +'" type="text" value="'+data[i].age +'" /></td>' + '<td><a class="'+ i +'"></a></td>');
+			//var tr = $("<td></td>")
+			//var li = $("<td>abc</td>");
+			$("#userlistbody").append($("<tr></tr>").append(trc));
+			//$("#userlistbody > tr").append(td_id);
+		}
+		
+		
+		
+	}
+	$.ajax({  
+        type:"get",  
+        url:"/users",  
+        dataType:"json",  
+        success: function aa(data) {  
+              showuserlist(data);
+        }  
+    }); 
+</script>
