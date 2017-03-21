@@ -1,0 +1,322 @@
+<div class="container">
+	<div class="col-md-12 " >
+			<h3 >ADD new Review</h3>
+			<form role="form" class="form-horizontal" >  
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">storeID</label>  
+					<div class="col-md-10">  
+						<select class="form-control" name='storeID' id="storelist">
+						</select>
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">userID</label>  
+					<div class="col-md-10">  
+						<select class="form-control" name='userID' id="userlist">
+						</select> 
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">Rating</label>  
+					<div class="col-md-10">  
+						<input class="form-control" name="rating" type="text" placeholder="rating" value="0"  />  
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">Comment</label>  
+					<div class="col-md-10">  
+						<input class="form-control" name="comment" type="text" placeholder="comment" value=""  />  
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<div class="col-md-offset-1 col-md-22 text-left">  
+						<button type="button" id="addNewOnebtn" class="btn btn-primary  btn-lg">  
+							SUBMIT
+						</button>  
+					</div>  
+				</div>  
+			</form> 
+		</div>
+	<div class="col-md-12 " >
+		<h3>Search Review</h3>
+		<small>search condition</small>
+		<form class="form-inline">
+			<div class="form-group">
+				<label for="exampleInputName2">storeID</label>
+				<input type="text" class="form-control" name="con_storeID" placeholder="storeID" value=''>
+			</div>
+			OR
+			<div class="form-group">
+				<label for="exampleInputEmail2">userID</label>
+				<input type="text" class="form-control" name="con_userID" placeholder="userID" value=''>
+			</div>
+			OR
+			<div class="form-group">
+				<label for="exampleInputEmail2">reviewID</label>
+				<input type="text" class="form-control" name="con_reviewID" placeholder="reviewID" value=''>
+			</div>
+			<button type="button" id="searchReviewbtn" class="btn btn-primary  btn-lg">  
+				search
+			</button>  
+		</form>
+	</div>
+	<div class="col-md-12 ">
+		<h5 >Search result</h5>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th style="width:1%">reviewID</th>
+					<th>userID</th>
+					<th>storeID</th>
+					<th>rating</th>
+					<th>Comment</th>
+				</tr>
+			</thead>
+			<tbody id="searchlistbody">
+				
+			</tbody>
+		</table>
+
+	</div>
+	<div class="col-md-12 " >
+		<h3 >Reviews list</h3>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th style="width:1%">reviewID</th>
+					<th>userID</th>
+					<th>storeID</th>
+					<th>rating</th>
+					<th>Comment</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="reviewlistbody">
+				
+			</tbody>
+		</table>  
+	</div>	
+</div>
+<script>
+	function showreviewlist(data){
+		$("#reviewlistbody").html("");
+		//alert(data);
+		
+		for(var i=0;i< data.length;i++){
+			if(data[i]['comment'] == undefined){data[i].comment='';}
+			var trc = $('<td id="id'+ i +'">'+data[i]._id+'</td>'+ '<td id="userID'+ i +'">'+data[i].userID+'</td>' + '<td id="storeID'+ i +'">'+data[i].storeID+'</td>' +'<td><input id="rating'+ i +'" type="text" value="'+data[i].rating +'" /></td><td><input id="comment'+ i +'" type="text" value="'+data[i].comment +'" /></td>'+'<td><a class="btn btn-success" id="update'+ i +'">Update</a></td><td><a class="btn btn-success" id="del'+ i +'">Delete</a></td>');
+			//var tr = $("<td></td>")
+			//var li = $("<td>abc</td>");
+			$("#reviewlistbody").append($("<tr></tr>").append(trc));
+		}
+	}
+	function showreviewlist2(data){
+		$("#searchlistbody").html("");
+		//alert("in");
+		for(var i=0;i< data.length;i++){
+			if(data[i]['comment'] == undefined){data[i].comment='';}
+			var trc = $('<td>'+data[i]._id+'</td><td>'+data[i].userID+'</td><td>'+data[i].storeID +'</td>'+'</td><td>'+data[i].rating +'</td>'+'</td><td>'+data[i].comment +'</td>');
+			//var tr = $("<td></td>")
+			//var li = $("<td>abc</td>");
+			//alert(trc);
+			$("#searchlistbody").append($("<tr></tr>").append(trc));
+			//$("#searchlistbody").append($('p'));
+			//$("#userlistbody > tr").append(td_id);
+		}
+	}
+	function showreviewlist3(data){
+		$("#searchlistbody").html("");
+		//alert("in");
+		if(data['comment'] == undefined){data.comment='';}
+		var trc = $('<td>'+data._id+'</td><td>'+data.userID+'</td><td>'+data.storeID +'</td>'+'</td><td>'+data.rating +'</td>'+'</td><td>'+data.comment +'</td>');
+		//var tr = $("<td></td>")
+		//var li = $("<td>abc</td>");
+		//alert(trc);
+		$("#searchlistbody").append($("<tr></tr>").append(trc));
+	}
+	function showstorelist(data){
+		$("#storelist").html("");
+		var options = '';
+		for(var i=0;i< data.length;i++){
+			options = options + '<option value=' +data[i]._id+ '>' +data[i]._id+ '</option>'
+		}
+		if(options == '' )
+		{
+			options = '<option value= "-1"> no stores</option>';
+		}
+		var op = $(options);
+		$("#storelist").append($(options));
+	}
+	function showuserlist(data){
+		$("#userlist").html("");
+		var options = '';
+		for(var i=0;i< data.length;i++){
+			options = options + '<option value=' +data[i]._id+ '>' +data[i]._id+ '</option>'
+		}
+		if(options == '' )
+		{
+			options = '<option value= "-1"> no users</option>';
+		}
+		var op = $(options);
+		$("#userlist").append($(options));
+	}
+	/* GET /users */
+	function get_reviews_query(){
+		var url='/reviews';
+		$.ajax({  
+			type:"get",  
+			url:url,  
+			dataType:"json",  
+			success: function aa(data) {  
+				  showreviewlist(data.reviews);
+			}  
+		}); 
+		$.ajax({  
+			type:"get",  
+			url:'/stores',  
+			dataType:"json",  
+			success: function aa(data) {  
+				  
+				  showstorelist(data.stores);
+			}  
+		});
+		$.ajax({  
+			type:"get",  
+			url:'/users',  
+			dataType:"json",  
+			success: function aa(data) {  
+				  
+				  showuserlist(data.users);
+			}  
+		});
+	}
+	/*start page show reviews list*/
+	get_reviews_query();
+	/*add new */
+	$("#addNewOnebtn").click(function(){
+		var data = {};
+		data.storeID = $("#storelist").val(); 
+		data.userID = $("#userlist").val(); 
+		data.rating = $("input[name='rating']").val();
+		data.comment = $("input[name='comment']").val();
+		console.log(data);
+		if(data.storeID == -1 || data.userID == -1 || data.rating<0 || data.rating > 10 ){
+				alert("Please check value!");
+		}else
+		{
+			$.ajax({  
+				type:"post",  
+				url:'/review',
+				data:data,
+				dataType:"json",  
+				success: function aa(data) {  
+					alert("Add new review successfully!");
+					$("input[name='rating']").val('0');
+					$("input[name='comment']").val('');
+					get_reviews_query();
+				}  
+			});	
+		}
+	});
+	/*search*/
+	$("#searchReviewbtn").click(function(){
+		var storeID = $("input[name='con_storeID']").val();
+		var userID = $("input[name='con_userID']").val();
+		var reviewID = $("input[name='con_reviewID']").val();
+		var query = 'review?';
+		var flag = -1;
+		if(storeID !='' && flag == -1)
+		{
+			query = query + 'storeID=' + storeID;
+			flag =1;
+		}
+		else if(userID !='' && flag == -1)
+		{
+			query = query + 'userID=' + userID;
+			flag =1;
+		}
+		else if(reviewID !='' && flag == -1)
+		{
+			query = query + 'id=' + reviewID;
+			flag =2;
+		}
+		if(flag == -1){alert('Search conditon is Null!');}
+		else{
+			if(flag == 1)
+			{
+				$.ajax({  
+					type:"get",  
+					url:query,  
+					dataType:"json",  
+					success: function aa(data) { 
+						console.log(data);
+						if(data.reviews.length>0){showreviewlist2(data.reviews);}
+						else{alert('search result is Null!');showreviewlist2(data.reviews);}
+					}  
+				});
+			}else if(flag == 2)
+			{
+				$.ajax({  
+					type:"get",  
+					url:query,  
+					dataType:"json",  
+					success: function aa(data) { 
+						console.log(data);
+						if(data != ''){showreviewlist3(data);}
+						else{alert('search result is Null!');showreviewlist3(data);}
+					}  
+				});
+			}
+			
+		}
+	});
+	$("#reviewlistbody").on("click","a", function() {
+		//alert($(this).attr("id"));
+		var str = $(this).attr("id");
+		if(str.indexOf('update')>-1){
+			str = str.replace('update','');
+			var id = $('#id'+str).text();
+			var url = "/review?id="+ id;
+			//alert(id);
+			var data = {};
+			data['rating'] = $('#rating'+str).val();
+			data['comment'] = $('#comment'+str).val();
+			if(data['comment'] == undefined){data['comment'] = '';}
+			if(data.rating<0 || data.rating > 10){
+				alert("Value must not be 0-10");
+				get_reviews_query();
+			}else{
+				$.ajax({  
+					type:"put",  
+					url:url,
+					data:data,
+					dataType:"json",  
+					success: function aa(data) {  
+						alert("update the review successfully");
+						$('#rating'+str).val(data.rating);
+						if(data['comment'] == undefined){$('#comment'+str).val('');}
+						else{$('#comment'+str).val(data.comment);}
+						
+						get_reviews_query();
+					}  
+				});
+			}
+		}
+		else if(str.indexOf('del')>-1){
+			str = str.replace('del','');
+			var id = $('#id'+str).text();
+			alert('haha');
+			$.ajax({  
+					type:"delete",  
+					url:'/review?id='+id,
+					dataType:"json",  
+					success: function aa(data) {
+						alert("Delete the review successfully");
+						get_reviews_query();
+					}  
+				});
+		}
+	 //do something here
+	});
+	
+</script>

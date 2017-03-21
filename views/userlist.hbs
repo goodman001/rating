@@ -1,30 +1,29 @@
 <div class="container">
 	<div class="col-md-12 " >
-		<div class="col-md-8 " >
 			<h3 >ADD new User</h3>
-			<form role="form" class="form-horizontal" action="/user" method="post">  
+			<form role="form" class="form-horizontal">  
 				<div class="form-group">  
 					<label class="col-md-2 control-label" for="name">Username</label>  
-					<div class="col-md-7">  
+					<div class="col-md-10">  
 						<input class="form-control" name="username" type="text"  placeholder="username" value=""  maxlength="20" minlength="1" required />  
 					</div>  
 				</div> 
 				<div class="form-group">  
-					<label class="col-md-2 control-label" for="name">Username</label>  
-					<div class="col-md-7">  
+					<label class="col-md-2 control-label" for="name">Firstname</label>  
+					<div class="col-md-10">  
 						<input class="form-control" name="firstname" type="text"  placeholder="first name" value=""  maxlength="20" minlength="1" required />  
 					</div>  
 				</div> 
 				<div class="form-group">  
-					<label class="col-md-2 control-label" for="name">Username</label>  
-					<div class="col-md-7">  
+					<label class="col-md-2 control-label" for="name">Lastname</label>  
+					<div class="col-md-10">  
 						<input class="form-control" name="lastname" type="text" placeholder="last name" value=""  maxlength="20" minlength="1" required />  
 					</div>  
 				</div> 
 
 				<div class="form-group">  
 					<label class="col-md-2 control-label" for="name">Gender</label>    
-					<div class="col-md-7">  
+					<div class="col-md-10">  
 						<label class="radio-inline">
 						  <input type="radio" name="sex" id="inlineRadio1" value="M" checked> M
 						</label>
@@ -35,23 +34,63 @@
 				</div>
 				<div class="form-group">  
 					<label class="col-md-2 control-label" for="name">Age</label>  
-					<div class="col-md-7">  
+					<div class="col-md-10">  
 						<input class="form-control" name="age" type="text" id="age" placeholder="Age" value="" pattern="^[0-9]{1,2}$" required/>  
 					</div>  
 				</div> 
 				<div class="form-group">  
 					<div class="col-md-offset-1 col-md-22 text-left">  
-						<button type="submit" class="btn btn-primary  btn-lg">  
+						<button type="button" id="addNewOnebtn" class="btn btn-primary  btn-lg">  
 							SUBMIT
 						</button>  
 					</div>  
 				</div>  
 			</form> 
 		</div>
-		<div class="col-md-4 " >
-			xxxx
-		</div>
-		
+	<div class="col-md-12 " >
+		<h3>Search user</h3>
+		<small>search condition</small>
+		<form class="form-inline">
+			<div class="form-group">
+				<label for="exampleInputName2">firstname</label>
+				<input type="text" class="form-control" name="con_firstname" placeholder="firstname" value=''>
+			</div>
+
+			<div class="form-group">
+				<label for="exampleInputEmail2">sex</label>
+				<input type="text" class="form-control" name="con_sex" placeholder="sex" value=''>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail2">lastname</label>
+				<input type="text" class="form-control" name="con_lastname" placeholder="lastname" value=''>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputEmail2">age</label>
+				<input type="text" class="form-control" name="con_age" placeholder="age" value=''>
+			</div>
+			<button type="button" id="searchUserbtn" class="btn btn-primary  btn-lg">  
+				search
+			</button>  
+		</form>
+	</div>
+	<div class="col-md-12 ">
+		<h5 >Search result</h5>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th style="width:1%">userID</th>
+					<th>Username</th>
+					<th>firstname</th>
+					<th>lastname</th>
+					<th>sex</th>
+					<th>age</th>
+				</tr>
+			</thead>
+			<tbody id="searchlistbody">
+				
+			</tbody>
+		</table>
+
 	</div>
 	<div class="col-md-12 " >
 		<h3 >Users list</h3>
@@ -76,37 +115,153 @@
 </div>
 <script>
 	function showuserlist(data){
+		$("#userlistbody").html("");
 		for(var i=0;i< data.length;i++){
-			var td_id = $('<input id="firstname" type="text" value="'+data[i]._id +'" />');
-			var trc = $('<td id="id'+ i +'">'+data[i]._id+'</td><td>'+data[i].username+'</td><td><input id="firstname'+ i +'" type="text" value="'+data[i].firstname +'" /></td>' + '<td><input id="lastname'+ i +'" type="text" value="'+data[i].lastname +'" /></td>'+ '<td><input id="sex'+ i +'" type="text" value="'+data[i].sex +'" /></td>'+ '<td><input id="age'+ i +'" type="text" value="'+data[i].age +'" /></td>' + '<td><a class="btn btn-success" id="upload'+ i +'">Upload</a></td><td><a class="btn btn-success" id="del'+ i +'">Delete</a></td>');
+			var trc = $('<td id="id'+ i +'">'+data[i]._id+'</td><td>'+data[i].username+'</td><td><input id="firstname'+ i +'" type="text" value="'+data[i].firstname +'" /></td>' + '<td><input id="lastname'+ i +'" type="text" value="'+data[i].lastname +'" /></td>'+ '<td><input id="sex'+ i +'" type="text" value="'+data[i].sex +'" /></td>'+ '<td><input id="age'+ i +'" type="text" value="'+data[i].age +'" /></td>' + '<td><a class="btn btn-success" id="update'+ i +'">Update</a></td><td><a class="btn btn-success" id="del'+ i +'">Delete</a></td>');
 			//var tr = $("<td></td>")
 			//var li = $("<td>abc</td>");
 			$("#userlistbody").append($("<tr></tr>").append(trc));
 			//$("#userlistbody > tr").append(td_id);
 		}
 	}
-	
-	$.ajax({  
-        type:"get",  
-        url:"/users",  
-        dataType:"json",  
-        success: function aa(data) {  
-              showuserlist(data);
-        }  
-    }); 
-	/*userlist edit /delete*/
+	function showuserlist2(data){
+		$("#searchlistbody").html("");
+		//alert("in");
+		for(var i=0;i< data.length;i++){
+			var trc = $('<td>'+data[i]._id+'</td><td>'+data[i].username+'</td><td>'+data[i].firstname +'</td>' + '<td>'+data[i].lastname +'</td>'+ '<td>'+data[i].sex +'</td>'+ '<td>'+data[i].age +'</td>');
+			//var tr = $("<td></td>")
+			//var li = $("<td>abc</td>");
+			//alert(trc);
+			$("#searchlistbody").append($("<tr></tr>").append(trc));
+			//$("#searchlistbody").append($('p'));
+			//$("#userlistbody > tr").append(td_id);
+		}
+	}
+	/* GET /users */
+	function get_users_query(){
+		var url='/users';
+		$.ajax({  
+			type:"get",  
+			url:url,  
+			dataType:"json",  
+			success: function aa(data) {  
+				  showuserlist(data.users);
+			}  
+		}); 
+	}
+	/*start page show user list*/
+	get_users_query();
+	/*post user*/
+	$("#addNewOnebtn").click(function(){
+		var data = {};
+		data.username = $("input[name='username']").val();
+		data.firstname = $("input[name='firstname']").val();
+		data.lastname = $("input[name='lastname']").val();
+		data.sex = $("input[name='sex']").val();
+		data.age = $("input[name='age']").val();
+		if(data['firstname'] == '' || data['lastname'] =="" || data['sex'] =='' || data['age']=='' || data['username']==''){
+				alert("values must not be empty");
+		}else
+		{
+			$.ajax({  
+				type:"post",  
+				url:'/user',
+				data:data,
+				dataType:"json",  
+				success: function aa(data) {  
+					alert("Add new user successfully!");
+					$("input[name='username']").val('');
+					$("input[name='firstname']").val('');
+					$("input[name='lastname']").val('');
+					$("input[name='sex']").val('');
+					$("input[name='age']").val('');
+					get_users_query();
+				}  
+			});	
+		}
+	});
+	$("#searchUserbtn").click(function(){
+		var firstname = $("input[name='con_firstname']").val();
+		var lastname = $("input[name='con_lastname']").val();
+		var sex = $("input[name='con_sex']").val();
+		var age = $("input[name='con_age']").val();
+		var query = 'users?';
+		var q = [];
+		if(firstname!=''){q[0]= 'firstname=' + firstname}else{q[0]= '';}
+		if(lastname!=''){q[1] =  'lastname=' + lastname}else{q[1]= '';}
+		if(sex!=''){q[2] =  'sex=' + sex}else{q[2]= '';}
+		if(age!=''){q[3] =  'age=' + age}else{q[3]= '';}
+		var firstflag = -1;
+		for(var i=0;i<q.length;i++){
+			if(q[i] !='' && firstflag == -1){
+				query = query + q[i]; 
+				firstflag = 0;
+			}else if(q[i] !='' && firstflag != -1){
+				query = query + '&' + q[i];
+			}
+		}
+		if(query == 'users?'){alert('Search conditon is Null!')}
+		else{
+			$.ajax({  
+				type:"get",  
+				url:query,  
+				dataType:"json",  
+				success: function aa(data) {  
+					console.log(data.users);
+					if(data.users.length>0){showuserlist2(data.users);}
+					else{alert('search result is Null!');showuserlist2(data.users);}
+				}  
+			});
+		}
+	});
+	/*userlist click*/
 	$("#userlistbody").on("click","a", function() {
 		//alert($(this).attr("id"));
 		var str = $(this).attr("id");
-		if(str.indexOf('upload')>-1){
-			str = str.replace('upload','');
-			var id = $('#id'+str).val();
-			var firstname = $('#firstname'+str).val();
-			var lastname = $('#lastname'+str).val();
-			var sex = $('#sex'+str).val();
-			var age = $('#age'+str).val();
-			alert(id);
+		if(str.indexOf('update')>-1){
+			str = str.replace('update','');
+			var id = $('#id'+str).text();
+			var url = "/user?id="+ id;
+			//alert(id);
+			var data = {};
+			data['firstname'] = $('#firstname'+str).val();
+			data['lastname'] = $('#lastname'+str).val();
+			data['sex'] = $('#sex'+str).val();
+			data['age'] = $('#age'+str).val();
+			if(data['firstname'] == '' || data['lastname'] =="" || data['sex'] =='' || data['age']==''){
+				alert("value must not be empty");
+				get_users_query();
+			}else{
+				$.ajax({  
+					type:"put",  
+					url:url,
+					data:data,
+					dataType:"json",  
+					success: function aa(data) {  
+						alert("update the user successfully");
+						$('#firstname'+str).val(data.firstname);
+						$('#lastname'+str).val(data.lastname);
+						$('#sex'+str).val(data.sex);
+						$('#age'+str).val(data.age);
+						get_users_query();
+					}  
+				});
+			}
+		}
+		else if(str.indexOf('del')>-1){
+			str = str.replace('del','');
+			var id = $('#id'+str).text();
+			$.ajax({  
+					type:"delete",  
+					url:'/user?id='+id,
+					dataType:"json",  
+					success: function aa(data) {
+						alert("Delete the user successfully");
+						get_users_query();
+					}  
+				});
 		}
      //do something here
- });
+	});
+	
 </script>

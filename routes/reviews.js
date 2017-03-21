@@ -11,14 +11,16 @@ var Review = require("../models/review")
 *curl --data "userID=1489654893559&storeID=1490011940573&rating=10" http://127.0.0.1:3000/review
 */
 router.post('/', function(req, res, next) {
+	var timestamp = req.body.id;
 	var userID = req.body.userID;
 	var storeID = req.body.storeID;
 	var rating = req.body.rating;
 	var comment = req.body.comment;
-	var timestamp=new Date().getTime();
+	if(timestamp == undefined || timestamp == ''){
+		timestamp=new Date().getTime();
+	}
 	if(userID == "" ||  storeID == "" || rating == '' || rating<0 || rating >10 || userID == undefined ||  storeID == undefined || rating == undefined ){
-		res.status(403)      // HTTP status 404: NotFound
-			.send('post value Error');
+		res.status(403).end();
 		return ;
 	}
 	if(comment = undefined)
@@ -37,7 +39,7 @@ router.post('/', function(req, res, next) {
 	var review =  new Review(reviewinfo);
 	User.count({'_id':userID},function(err,re){
 	if (err) {
-		console.log(err);
+		res.status(403).end();
 		return;
 	 }else
 	 {  
@@ -47,7 +49,7 @@ router.post('/', function(req, res, next) {
 		   /*FIND USRE END*/
 			Store.count({'_id':storeID},function(err,re){
 			if (err) {
-				console.log(err);
+				res.status(403).end();
 				return;
 			 }else
 			 {  
@@ -57,7 +59,7 @@ router.post('/', function(req, res, next) {
 					/*find store*/
 					Review.count({'userID':userID,'storeID':storeID},function(err,re){
 					if (err) {
-						console.log(err);
+						res.status(403).end();
 						return;
 					 }else
 					 {  
@@ -65,26 +67,24 @@ router.post('/', function(req, res, next) {
 						if(reviewcount >0)
 						{
 							/*find review*/
-							res.status(403)      // HTTP status 404: NotFound
-								.send('store revew Error');
+							res.status(403).end();
 							return ; 
 						}else
 						{
 							review.save(function(err,review){
 								if (err) {
-								  console.log(err);
+								  res.status(403).end();
 
 								}else
 								{
 									Review.findOne({'_id':timestamp},function(err,re){
 										if(err){
-											res.status(404)      // HTTP status 404: NotFound
-												.send('review ID Error');
+											res.status(403).end();
 											return;
 										}else
 										{
 											res.json(re)
-												.status(200);
+												.status(200).end();
 											return;
 
 										}
@@ -101,8 +101,7 @@ router.post('/', function(req, res, next) {
 					
 				}else
 				{
-					res.status(403)      // HTTP status 404: NotFound
-						.send('store Error');
+					res.status(403).end();      // HTTP status 404: NotFound
 					return ; 
 				}
 			  }
@@ -110,8 +109,7 @@ router.post('/', function(req, res, next) {
 			});
 		}else
 		{
-			res.status(403)      // HTTP status 404: NotFound
-				.send('Username Error');
+			res.status(403).end();
 		  	return ; 
 		}
 		//res.cookie('name', _name, {expire : new Date() + 600000});        
@@ -131,27 +129,24 @@ router.get('/', function(req, res, next) {
   var userID = req.query.userID;
   var storeID = req.query.storeID;
   if(id == undefined && userID == undefined && storeID == undefined ){
-    res.status(404)      // HTTP status 404: NotFound
-    	.send('ID Error');
+    res.status(404).end();
     return;
   }
   if(id !=undefined)
   {
     Review.findOne({'_id':id},function(err,re){
       if(err){
-        res.status(404)      // HTTP status 404: NotFound
-            .send('ID Error');
+        res.status(404).end();
         return;
       }else
       {
         if(re != null){
           res.json(re)
-			.status(200);
+			.status(200).end();
 			return;
         }else
         {
-          res.status(404)      // HTTP status 404: NotFound
-            .send('ID Error');
+          res.status(404).end();
         }
         return;
 
@@ -159,21 +154,19 @@ router.get('/', function(req, res, next) {
     });
   }
   else if(userID != undefined){
-	 Review.findOne({'userID':userID},function(err,re){
+	 Review.find({'userID':userID},function(err,re){
       if(err){
-        res.status(404)      // HTTP status 404: NotFound
-            .send(' reivew ID Error');
+        res.status(404).end();
         return;
       }else
       {
         if(re != null){
-          res.json(re)
-			.status(200);
+          res.json({reviews:re})
+			.status(200).end();
 			return;
         }else
         {
-          res.status(404)      // HTTP status 404: NotFound
-            .send('ID Error');
+          res.status(404).end();
         }
         return;
 
@@ -181,21 +174,19 @@ router.get('/', function(req, res, next) {
     });
   }
   else if(storeID != undefined){
-	 Review.findOne({'storeID':storeID},function(err,re){
+	 Review.find({'storeID':storeID},function(err,re){
       if(err){
-        res.status(404)      // HTTP status 404: NotFound
-            .send(' reivew ID Error');
+        res.status(404).end();
         return;
       }else
       {
         if(re != null){
-          res.json(re)
-			.status(200);
+          res.json({reviews:re})
+			.status(200).end();
 			return;
         }else
         {
-          res.status(404)      // HTTP status 404: NotFound
-            .send('ID Error');
+          res.status(404).end();
         }
         return;
 
@@ -212,21 +203,18 @@ router.delete('/', function(req, res, next){
   var userID = req.query.userID;
   var storeID = req.query.storeID;
   if(id == undefined && userID == undefined && storeID == undefined ){
-    res.status(404)      // HTTP status 404: NotFound
-    	.send('ID Error');
+    res.status(404).end();
     return;
   }
   if(id !=undefined){
 	  Review.findOne({'_id':id},function(err,re){
 		if(err){
-		  res.status(404)
-			.send('Delete Error');;    // HTTP status 404: NotFound
+		  res.status(404).end();
 		  return;
 		}else
 		{
 		  if(re == null){
-			  res.status(404)
-			  .send('Delete review Error');    // HTTP status 404: NotFound
+			  res.status(404).end();
 			  return;
 		  }else{
 			Review.remove({
@@ -234,14 +222,12 @@ router.delete('/', function(req, res, next){
 			}, function(err, re) {
 				if (err)
 				{
-					res.status(404)
-						.send('Delete Error');      // HTTP status 404: NotFound
+					res.status(404).end();
 					return;
 				}
 				else
 				{
-					res.status(200)
-					.send('Delete success');  
+					res.json('').status(200).end();
 					return;
 				}      
 			});
@@ -251,16 +237,14 @@ router.delete('/', function(req, res, next){
 	  });
   }
   else if(userID !=undefined){
-	  Review.findOne({'userID':userID},function(err,re){
+	  Review.find({'userID':userID},function(err,re){
 		if(err){
-		  res.status(404)
-			.send('Delete Error');;    // HTTP status 404: NotFound
+		  res.status(404).end();
 		  return;
 		}else
 		{
 		  if(re == null){
-			  res.status(404)
-			  .send('Delete review Error');    // HTTP status 404: NotFound
+			  res.status(404).end();
 			  return;
 		  }else{
 			Review.remove({
@@ -268,14 +252,12 @@ router.delete('/', function(req, res, next){
 			}, function(err, re) {
 				if (err)
 				{
-					res.status(404)
-						.send('Delete Error');      // HTTP status 404: NotFound
+					res.status(404).end();
 					return;
 				}
 				else
 				{
-					res.status(200)
-					.send('Delete success');  
+					res.json('').status(200).end(); 
 					return;
 				}      
 			});
@@ -285,16 +267,14 @@ router.delete('/', function(req, res, next){
 	  });
   }
   else if(storeID !=undefined){
-	  Review.findOne({'storeID':storeID},function(err,re){
+	  Review.find({'storeID':storeID},function(err,re){
 		if(err){
-		  res.status(404)
-			.send('Delete Error');;    // HTTP status 404: NotFound
+		  res.status(404).end();
 		  return;
 		}else
 		{
 		  if(re == null){
-			  res.status(404)
-			  .send('Delete review Error');    // HTTP status 404: NotFound
+			  res.status(404).end();
 			  return;
 		  }else{
 			Review.remove({
@@ -302,14 +282,12 @@ router.delete('/', function(req, res, next){
 			}, function(err, re) {
 				if (err)
 				{
-					res.status(404)
-						.send('Delete Error');      // HTTP status 404: NotFound
+					res.status(404).end();
 					return;
 				}
 				else
 				{
-					res.status(200)
-					.send('Delete success');  
+					res.json('').status(200).end();
 					return;
 				}      
 			});
@@ -333,8 +311,7 @@ router.put('/', function(req, res, next){
   if(rating!=undefined)
   {
 	  if(rating<0 || rating>10){
-		  res.status(403)      // HTTP status 404: NotFound
-          .send('rating range error');
+		  res.status(403).end();      // HTTP status 404: NotFound
       	return;
 	  }else
 	  {
@@ -345,25 +322,22 @@ router.put('/', function(req, res, next){
   if(comment!=undefined){condition['comment'] = comment;}
   Review.findOne({'_id':ids},function(err,re){
     if(err){
-      res.status(404)      // HTTP status 404: NotFound
-          .send('review  find Error');
+      res.status(404).end();      // HTTP status 404: NotFound
       return;
     }else
     {
       if(re == null){
-          res.status(404)      // HTTP status 404: NotFound
-          .send('ID find Error');
+          res.status(404).end();     // HTTP status 404: NotFound
 		  return;
       }else{
 		 //console.log(condition);
          Review.update({'_id':ids},{$set: condition}, function(err,re) {
             if(err){
-              res.status(404)      // HTTP status 404: NotFound
-                  .send('ID find Error');
+              res.status(404).end();      // HTTP status 404: NotFound
               return;
             }else{
 				Review.findOne({'_id':ids},function(err,re){
-				  res.json(re);
+				  res.json(re).status(200).end();
 				  return;
 				});
 			}

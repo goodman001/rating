@@ -1,23 +1,25 @@
 var express = require('express');
 var router = express.Router();
 var User = require("../models/user")
-
+var Review = require("../models/review")
 /*
 *curl --data "username=gump1994&firstname=Tom&lastname=Hanks&sex=M&age=60" http://127.0.0.1:3000/user
 *curl --data "username=h0rcux&firstname=Tom&lastname=Riddle&sex=M&age=71" http://127.0.0.1:3000/user
 */
 router.post('/', function(req, res, next) {
+  var timestamp = req.body.id;
   var username = req.body.username;
   var firstname = req.body.firstname;
   var lastname = req.body.lastname;
   var age = req.body.age;
   var sex = req.body.sex;
-  console.log(username);
-  var timestamp=new Date().getTime();
+  //console.log(username);
+  if(timestamp == undefined || timestamp == ''){
+    timestamp=new Date().getTime();
+  }
   if(username == undefined)
   {
-    res.status(403)      // HTTP status 404: NotFound
-      .send('Username Error');
+    res.status(403).end();
     return ;
   }
   var userinfo=
@@ -39,18 +41,17 @@ router.post('/', function(req, res, next) {
         var usercount = re;
         if(usercount >0)
         {
-          res.status(403)      // HTTP status 404: NotFound
-              .redirect('/users');
+          res.status(403).end();      // HTTP status 404: NotFound
           return ;          
         }else
         {
           user.save(function(err,user){
             if (err) {
-              console.log(err);
+              res.status(403).end();      // HTTP status 404: NotFound
  
             }else
             {
-              res.status(200).redirect('/users');     // HTTP status 404: NotFound
+              res.json(userinfo).status(200).end();     // HTTP status 404: NotFound
 				      
             }
             return;
@@ -72,25 +73,22 @@ router.get('/', function(req, res, next) {
   var id = req.query.id;
   var username = req.query.username;
   if(id == undefined && username == undefined){
-    res.status(404)      // HTTP status 404: NotFound
-    .send('ID or username Error');
+    res.status(404).end();
     return;
   }
   if(id !=undefined)
   {
     User.findOne({'_id':id},function(err,re){
       if(err){
-        res.status(404)      // HTTP status 404: NotFound
-            .send('ID Error');
+        res.status(404).end();      // HTTP status 404: NotFound
         return;
       }else
       {
         if(re != null){
-          res.json(re);
+          res.json(re).status(200).end();
         }else
         {
-          res.status(404)      // HTTP status 404: NotFound
-            .send('ID Error');
+          res.status(404).end();      // HTTP status 404: NotFound
         }
         return;
 
@@ -100,17 +98,15 @@ router.get('/', function(req, res, next) {
   {
     User.findOne({'username':username},function(err,re){
       if(err){
-        res.status(404)      // HTTP status 404: NotFound
-            .send('Username Error');
+        res.status(404).end();     // HTTP status 404: NotFound
         return;
       }else
       {
         if(re != null){
-          res.json(re);
+          res.json(re).status(200).end();
         }else
         {
-          res.status(404)      // HTTP status 404: NotFound
-            .send('Username Error');
+          res.status(404).end();     // HTTP status 404: NotFound
         }
         return;
 
@@ -126,28 +122,41 @@ router.delete('/', function(req, res, next){
   var ids = req.query.id;
   User.findOne({'_id':ids},function(err,re){
     if(err){
-      res.status(404)      // HTTP status 404: NotFound
-          .send('ID find Error');
+      res.status(404).end();      // HTTP status 404: NotFound
       return;
     }else
     {
       if(re == null){
-          res.status(404)      // HTTP status 404: NotFound
-          .send('ID find Error');
+          res.status(404).end();      // HTTP status 404: NotFound
+          return;
       }else{
-        User.remove({
-        _id: ids
+        Review.remove({
+        userID: ids
         }, function(err, re) {
-            if (err)
-            {
-              res.status(404)      // HTTP status 404: NotFound
-                  .send('Delete Error');
-            }
-            else
-            {
-              res.json({ message: 'Successfully deleted' });
-            }      
+          if (err)
+          {
+            res.status(404).end();
+            return;
+          }
+          else
+          {
+            User.remove({
+            _id: ids
+            }, function(err, re) {
+                if (err)
+                {
+                  res.status(404).end();      // HTTP status 404: NotFound
+                  return;
+                }
+                else
+                {
+                  res.json('').status(200).end();
+                  return;
+                }      
+            });
+          }      
         });
+        
       }
 
     }
@@ -171,23 +180,20 @@ router.put('/', function(req, res, next){
   if(sex!=undefined){condition['sex'] = sex;} 
   User.findOne({'_id':ids},function(err,re){
     if(err){
-      res.status(404)      // HTTP status 404: NotFound
-          .send('ID find Error');
+      res.status(404).end();      // HTTP status 404: NotFound
       return;
     }else
     {
       if(re == null){
-          res.status(404)      // HTTP status 404: NotFound
-          .send('ID find Error');
+          res.status(404).end();      // HTTP status 404: NotFound
       }else{
          User.update({'_id':ids},{$set: condition}, function(err,re) {
             if(err){
-              res.status(404)      // HTTP status 404: NotFound
-                  .send('ID find Error');
+              res.status(404).end();      // HTTP status 404: NotFound
               return;
             }
             User.findOne({'_id':ids},function(err,re){
-              res.json(re);
+              res.json(re).status(200).end();
               return;
             });
             

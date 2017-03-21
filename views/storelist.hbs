@@ -1,0 +1,229 @@
+<div class="container">
+	<div class="col-md-12 " >
+			<h3 >ADD new Store</h3>
+			<form role="form" class="form-horizontal" >  
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">storename</label>  
+					<div class="col-md-10">  
+						<input class="form-control" name="storename" type="text"  placeholder="storename" value=""  />  
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">category</label>  
+					<div class="col-md-10">  
+						<input class="form-control" name="category" type="text"  placeholder="category" value=""  />  
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<label class="col-md-2 control-label" for="name">Address</label>  
+					<div class="col-md-10">  
+						<input class="form-control" name="address" type="text" placeholder="address" value=""  />  
+					</div>  
+				</div> 
+				<div class="form-group">  
+					<div class="col-md-offset-1 col-md-22 text-left">  
+						<button type="button" id="addNewOnebtn" class="btn btn-primary  btn-lg">  
+							SUBMIT
+						</button>  
+					</div>  
+				</div>  
+			</form> 
+		</div>
+	<div class="col-md-12 " >
+		<h3>Search store</h3>
+		<small>search condition</small>
+		<form class="form-inline">
+			<div class="form-group">
+				<label for="exampleInputName2">category</label>
+				<input type="text" class="form-control" name="con_category" placeholder="category" value=''>
+			</div>
+
+			<div class="form-group">
+				<label for="exampleInputEmail2">storename</label>
+				<input type="text" class="form-control" name="con_storename" placeholder="storename" value=''>
+			</div>
+			<button type="button" id="searchStorebtn" class="btn btn-primary  btn-lg">  
+				search
+			</button>  
+		</form>
+	</div>
+	<div class="col-md-12 ">
+		<h5 >Search result</h5>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th style="width:1%">storeID</th>
+					<th>store name</th>
+					<th>category</th>
+					<th>address</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="searchlistbody">
+				
+			</tbody>
+		</table>
+
+	</div>
+	<div class="col-md-12 " >
+		<h3 >Stores list</h3>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th style="width:1%">storeID</th>
+					<th>store name</th>
+					<th>category</th>
+					<th>address</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="storelistbody">
+				
+			</tbody>
+		</table>  
+	</div>	
+</div>
+<script>
+	function showstorelist(data){
+		$("#storelistbody").html("");
+		for(var i=0;i< data.length;i++){
+			var trc = $('<td id="id'+ i +'">'+data[i]._id+'</td>'+ '<td><input id="storename'+ i +'" type="text" value="'+data[i].storename +'" /></td><td><input id="category'+ i +'" type="text" value="'+data[i].category +'" /></td>' + '<td><input id="address'+ i +'" type="text" value="'+data[i].address +'" /></td>' + '<td><a class="btn btn-success" id="update'+ i +'">Update</a></td><td><a class="btn btn-success" id="del'+ i +'">Delete</a></td>');
+			//var tr = $("<td></td>")
+			//var li = $("<td>abc</td>");
+			$("#storelistbody").append($("<tr></tr>").append(trc));
+		}
+	}
+	function showuserlist2(data){
+		$("#searchlistbody").html("");
+		//alert("in");
+		for(var i=0;i< data.length;i++){
+			var trc = $('<td>'+data[i]._id+'</td><td>'+data[i].storename+'</td><td>'+data[i].category +'</td>'+'</td><td>'+data[i].address +'</td>');
+			//var tr = $("<td></td>")
+			//var li = $("<td>abc</td>");
+			//alert(trc);
+			$("#searchlistbody").append($("<tr></tr>").append(trc));
+			//$("#searchlistbody").append($('p'));
+			//$("#userlistbody > tr").append(td_id);
+		}
+	}
+	/* GET /stores */
+	function get_stores_query(){
+		var url='/stores';
+		$.ajax({  
+			type:"get",  
+			url:url,  
+			dataType:"json",  
+			success: function aa(data) {  
+				  showstorelist(data.stores);
+			}  
+		}); 
+	}
+	/*start page show user list*/
+	get_stores_query();
+	/*add new */
+	$("#addNewOnebtn").click(function(){
+		var data = {};
+		data.storename = $("input[name='storename']").val();
+		data.category = $("input[name='category']").val();
+		data.address = $("input[name='address']").val();
+		if(data['storename'] == '' || data['category'] =="" || data['address'] ==''){
+				alert("values must not be empty");
+		}else
+		{
+			$.ajax({  
+				type:"post",  
+				url:'/store',
+				data:data,
+				dataType:"json",  
+				success: function aa(data) {  
+					alert("Add new user successfully!");
+					$("input[name='storename']").val('');
+					$("input[name='category']").val('');
+					$("input[name='address']").val('');
+					get_stores_query()
+				}  
+			});	
+		}
+	});
+	/*search*/
+	$("#searchStorebtn").click(function(){
+		var category = $("input[name='con_category']").val();
+		var storename = $("input[name='con_storename']").val();
+		var query = 'stores?';
+		var q = [];
+		if(category !=''){q[0]= 'category=' + category}else{q[0]= '';}
+		if(storename !=''){q[1] =  'storename=' + storename}else{q[1]= '';}
+		var firstflag = -1;
+		for(var i=0;i<q.length;i++){
+			if(q[i] !='' && firstflag == -1){
+				query = query + q[i]; 
+				firstflag = 0;
+			}else if(q[i] !='' && firstflag != -1){
+				query = query + '&' + q[i];
+			}
+		}
+		if(query == 'stores?'){alert('Search conditon is Null!')}
+		else{
+			$.ajax({  
+				type:"get",  
+				url:query,  
+				dataType:"json",  
+				success: function aa(data) {  
+					console.log(data.stores);
+					if(data.stores.length>0){showuserlist2(data.stores);}
+					else{alert('search result is Null!');showuserlist2(data.stores);}
+				}  
+			});
+		}
+	});
+	/*store list*/
+	$("#storelistbody").on("click","a", function() {
+		//alert($(this).attr("id"));
+		var str = $(this).attr("id");
+		if(str.indexOf('update')>-1){
+			str = str.replace('update','');
+			var id = $('#id'+str).text();
+			var url = "/store?id="+ id;
+			//alert(id);
+			var data = {};
+			data['storename'] = $('#storename'+str).val();
+			data['category'] = $('#category'+str).val();
+			data['address'] = $('#address'+str).val();
+			if(data['storename'] == '' || data['category'] =="" || data['address'] ==''){
+				alert("Value must not be empty");
+				get_stores_query();
+			}else{
+				$.ajax({  
+					type:"put",  
+					url:url,
+					data:data,
+					dataType:"json",  
+					success: function aa(data) {  
+						alert("update the store successfully");
+						$('#storename'+str).val(data.storename);
+						$('#category'+str).val(data.category);
+						$('#address'+str).val(data.address);
+						get_stores_query();
+					}  
+				});
+			}
+		}
+		else if(str.indexOf('del')>-1){
+			str = str.replace('del','');
+			var id = $('#id'+str).text();
+			$.ajax({  
+					type:"delete",  
+					url:'/store?id='+id,
+					dataType:"json",  
+					success: function aa(data) {
+						alert("Delete the store successfully");
+						get_stores_query();
+					}  
+				});
+		}
+     //do something here
+	});
+	
+</script>
